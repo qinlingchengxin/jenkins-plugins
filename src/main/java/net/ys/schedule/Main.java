@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ import java.util.List;
 @Service
 public class Main {
 
+    @Value("${rootPath}")
+    private String rootPath;
+
     @Scheduled(cron = "0 */5 * * * *")
     public void download() {
         System.out.println("job start，time：" + System.currentTimeMillis());
@@ -38,14 +42,14 @@ public class Main {
         }
     }
 
-    private static void downloadFile(String u) {
-        String path = "/plugins" + u.substring(0, u.lastIndexOf('/'));
+    private void downloadFile(String u) {
+        String path = rootPath + u.substring(0, u.lastIndexOf('/'));
         File p = new File(path);
         if (!p.exists()) {
             p.mkdirs();
         }
 
-        File file = new File("/plugins" + u);
+        File file = new File(rootPath + u);
         if (file.exists()) {
             return;
         }
@@ -71,7 +75,7 @@ public class Main {
         }
     }
 
-    private static List<String> subUrl(String subUrl) {
+    private List<String> subUrl(String subUrl) {
         try {
             URL url = new URL(subUrl);
             InputStream stream = url.openStream();
@@ -110,7 +114,7 @@ public class Main {
         return null;
     }
 
-    public static List<String> mainUrl() {
+    public List<String> mainUrl() {
         try {
             String url1 = "http://updates.jenkins-ci.org/download/plugins";
             URL url = new URL(url1);
