@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Main {
     @Value("${rootPath}")
     private String rootPath;
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void download() {
         System.out.println("job start，time：" + System.currentTimeMillis());
         List<String> mainUrl = mainUrl();
@@ -57,7 +58,9 @@ public class Main {
         try {
             System.out.println(u);
             URL url = new URL("http://updates.jenkins-ci.org" + u);
-            InputStream stream = url.openStream();
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(30000);
+            InputStream stream = connection.getInputStream();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             byte[] bytes = new byte[1024];
             int len;
@@ -78,7 +81,9 @@ public class Main {
     private List<String> subUrl(String subUrl) {
         try {
             URL url = new URL(subUrl);
-            InputStream stream = url.openStream();
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(30000);
+            InputStream stream = connection.getInputStream();
 
             byte[] bytes = new byte[1024];
             int len;
@@ -118,7 +123,9 @@ public class Main {
         try {
             String url1 = "http://updates.jenkins-ci.org/download/plugins";
             URL url = new URL(url1);
-            InputStream stream = url.openStream();
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(30000);
+            InputStream stream = connection.getInputStream();
             StringBuffer stringBuffer = new StringBuffer();
             byte[] bytes = new byte[1024];
             int len;
