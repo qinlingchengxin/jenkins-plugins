@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 public class Main {
 
-    @Scheduled(cron = "0 0 0 * * 1")
+    @Scheduled(cron = "0 0 */2 * * *")
     public void download() {
         try {
             List<String> mainUrl = mainUrl();
