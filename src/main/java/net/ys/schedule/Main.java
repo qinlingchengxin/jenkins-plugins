@@ -38,8 +38,7 @@ public class Main {
         }
     }
 
-    private static void downloadFile(String u) throws IOException {
-
+    private static void downloadFile(String u) {
         String path = "/plugins" + u.substring(0, u.lastIndexOf('/'));
         File p = new File(path);
         if (!p.exists()) {
@@ -51,19 +50,24 @@ public class Main {
             return;
         }
 
-        System.out.println(u);
+        try {
+            System.out.println(u);
+            URL url = new URL("http://updates.jenkins-ci.org" + u);
+            InputStream stream = url.openStream();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            byte[] bytes = new byte[1024];
+            int len;
+            while ((len = stream.read(bytes)) > 0) {
+                fileOutputStream.write(bytes, 0, len);
+            }
 
-        URL url = new URL("http://updates.jenkins-ci.org" + u);
-        InputStream stream = url.openStream();
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        byte[] bytes = new byte[1024];
-        int len;
-        while ((len = stream.read(bytes)) > 0) {
-            fileOutputStream.write(bytes, 0, len);
+            stream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            if (file.exists()) {
+                file.delete();
+            }
         }
-
-        stream.close();
-        fileOutputStream.close();
     }
 
     private static List<String> subUrl(String subUrl) throws IOException {
