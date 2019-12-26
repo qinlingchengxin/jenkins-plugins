@@ -64,6 +64,7 @@ public class Main {
             stream.close();
             fileOutputStream.close();
         } catch (Exception e) {
+            System.out.println("error------------->" + u);
             if (file.exists()) {
                 file.delete();
             }
