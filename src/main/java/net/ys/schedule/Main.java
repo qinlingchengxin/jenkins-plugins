@@ -27,6 +27,9 @@ public class Main {
     @Value("${rootPath}")
     private String rootPath;
 
+    @Value("${downloadLayer}")
+    private int downloadLayer;
+
     @Scheduled(cron = "0 */2 * * * *")
     public void download() {
         System.out.println("job start，time：" + System.currentTimeMillis());
@@ -104,7 +107,7 @@ public class Main {
                 }
 
                 i++;
-                if (i > 2) {
+                if (i > downloadLayer) {
                     break;
                 }
 
