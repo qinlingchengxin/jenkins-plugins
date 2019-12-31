@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 
 /**
  * User: NMY
@@ -18,8 +19,8 @@ public class TestController {
     private Main main;
 
     @GetMapping("/test")
-    public String test() {
-        main.download();
+    public String test() throws IOException {
+        main.genUrl();
         return "success";
     }
 }

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -30,19 +28,43 @@ public class Main {
     @Value("${downloadLayer}")
     private int downloadLayer;
 
-    @Scheduled(cron = "0 */2 * * * *")
-    public void download() {
-        System.out.println("job start，time：" + System.currentTimeMillis());
+    @Scheduled(cron = "10 10 0 */2 * *")
+    public void genUrl() throws IOException {
+        System.out.println("genUrl start，time：" + System.currentTimeMillis());
         List<String> mainUrl = mainUrl();
         if (mainUrl != null) {
             for (String subUrl : mainUrl) {
                 List<String> us = subUrl(subUrl);
                 if (us != null) {
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rootPath + "/url.txt")));
                     for (String u : us) {
-                        downloadFile(u);
+                        writer.write(u);
+                        writer.newLine();
                     }
+                    writer.flush();
+                    writer.close();
                 }
             }
+        }
+    }
+
+
+    @Scheduled(cron = "0 */2 * * * *")
+    public void download() throws IOException {
+        System.out.println("download start，time：" + System.currentTimeMillis());
+        if (!new File(rootPath + "/url.txt").exists()) {
+            return;
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(rootPath + "/url.txt")));
+        String url;
+        List<String> list = new ArrayList<>();
+        while ((url = reader.readLine()) != null) {
+            list.add(url);
+
+        }
+        reader.close();
+        for (String u : list) {
+            downloadFile(u);
         }
     }
 
