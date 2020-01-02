@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,15 +29,26 @@ public class Main {
     @Value("${downloadLayer}")
     private int downloadLayer;
 
+    @PostConstruct
+    public void init() {
+        File file = new File(rootPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
+
     @Scheduled(cron = "10 10 0 */2 * *")
     public void genUrl() throws IOException {
         System.out.println("genUrl start，time：" + System.currentTimeMillis());
+
+        new File(rootPath + "/url.txt").delete();
+
         List<String> mainUrl = mainUrl();
         if (mainUrl != null) {
             for (String subUrl : mainUrl) {
                 List<String> us = subUrl(subUrl);
                 if (us != null) {
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rootPath + "/url.txt")));
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rootPath + "/url.txt", true)));
                     for (String u : us) {
                         writer.write(u);
                         writer.newLine();
@@ -49,7 +61,7 @@ public class Main {
     }
 
 
-    @Scheduled(cron = "0 */2 * * * *")
+    @Scheduled(cron = "0 */2 2-23 * * *")
     public void download() throws IOException {
         System.out.println("download start，time：" + System.currentTimeMillis());
         if (!new File(rootPath + "/url.txt").exists()) {
