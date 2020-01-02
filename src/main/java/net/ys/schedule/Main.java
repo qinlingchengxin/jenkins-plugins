@@ -1,5 +1,7 @@
 package net.ys.schedule;
 
+import net.ys.util.req.HttpResponse;
+import net.ys.util.req.HttpsUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,31 +39,46 @@ public class Main {
         }
     }
 
+    @Scheduled(cron = "0 0 0 * * *")
+    public void genJson() throws IOException {
+        System.out.println("genSon start，time：" + System.currentTimeMillis());
+        String json = "https://updates.jenkins.io/update-center.json";
+        HttpResponse response = HttpsUtil.doGet(json);
+        FileOutputStream fos = new FileOutputStream(rootPath + "/update-center.json");
+        fos.write(response.getValue().getBytes());
+        fos.close();
+        System.out.println("genSon end，time：" + System.currentTimeMillis());
+    }
+
     @Scheduled(cron = "10 10 0 */2 * *")
     public void genUrl() throws IOException {
         System.out.println("genUrl start，time：" + System.currentTimeMillis());
 
-        new File(rootPath + "/url.txt").delete();
-
         List<String> mainUrl = mainUrl();
         if (mainUrl != null) {
-            for (String subUrl : mainUrl) {
-                List<String> us = subUrl(subUrl);
-                if (us != null) {
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rootPath + "/url.txt", true)));
-                    for (String u : us) {
-                        writer.write(u);
-                        writer.newLine();
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(rootPath + "/url.txt")));
+                for (String subUrl : mainUrl) {
+                    List<String> us = subUrl(subUrl);
+                    if (us != null) {
+                        for (String u : us) {
+                            writer.write(u);
+                            writer.newLine();
+                        }
+                        writer.flush();
                     }
-                    writer.flush();
+                }
+            } finally {
+                if (writer != null) {
                     writer.close();
                 }
             }
         }
+        System.out.println("genUrl end，time：" + System.currentTimeMillis());
     }
 
-
-    @Scheduled(cron = "0 */2 1-23 * * *")
+    @Scheduled(cron = "0 */2 15-23 * * *")
     public void download() throws IOException {
         System.out.println("download start，time：" + System.currentTimeMillis());
         if (!new File(rootPath + "/url.txt").exists()) {
@@ -78,6 +95,7 @@ public class Main {
         for (String u : list) {
             downloadFile(u);
         }
+        System.out.println("download end，time：" + System.currentTimeMillis());
     }
 
     private void downloadFile(String u) {

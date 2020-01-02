@@ -18,9 +18,21 @@ public class TestController {
     @Resource
     private Main main;
 
-    @GetMapping("/test")
-    public String test() throws IOException {
+    @GetMapping("/genUrl")
+    public String genUrl() throws IOException {
         main.genUrl();
+        return "success";
+    }
+
+    @GetMapping("/download")
+    public String download() throws IOException {
+        main.download();
+        return "success";
+    }
+
+    @GetMapping("/genJson")
+    public String genJson() throws IOException {
+        main.genJson();
         return "success";
     }
 }
