@@ -78,7 +78,7 @@ public class Main {
         System.out.println("genUrl end，time：" + System.currentTimeMillis());
     }
 
-    @Scheduled(cron = "0 */2 1-23 * * *")
+    @Scheduled(cron = "0 20 1-23 * * *")
     public void download() throws IOException {
         System.out.println("download start，time：" + System.currentTimeMillis());
         if (!new File(rootPath + "/url.txt").exists()) {
