@@ -41,13 +41,13 @@ public class Main {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void genJson() throws IOException {
-        System.out.println("genSon start，time：" + System.currentTimeMillis());
+        System.out.println("genJson start，time：" + System.currentTimeMillis());
         String json = "https://updates.jenkins.io/update-center.json";
         HttpResponse response = HttpsUtil.doGet(json);
         FileOutputStream fos = new FileOutputStream(rootPath + "/update-center.json");
         fos.write(response.getValue().getBytes());
         fos.close();
-        System.out.println("genSon end，time：" + System.currentTimeMillis());
+        System.out.println("genJson end，time：" + System.currentTimeMillis());
     }
 
     @Scheduled(cron = "10 10 0 */2 * *")
