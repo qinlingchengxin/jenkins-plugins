@@ -39,7 +39,7 @@ public class Main {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 2 * * *")
     public void genJson() throws IOException {
         System.out.println("genJson start，time：" + System.currentTimeMillis());
         String json = "https://updates.jenkins.io/update-center.json";
@@ -50,7 +50,7 @@ public class Main {
         System.out.println("genJson end，time：" + System.currentTimeMillis());
     }
 
-    @Scheduled(cron = "10 10 0 */2 * *")
+    @Scheduled(cron = "10 10 3 * * *")
     public void genUrl() throws IOException {
         System.out.println("genUrl start，time：" + System.currentTimeMillis());
 
@@ -78,7 +78,7 @@ public class Main {
         System.out.println("genUrl end，time：" + System.currentTimeMillis());
     }
 
-    @Scheduled(cron = "0 20 1-23 * * *")
+    @Scheduled(cron = "0 20 3-23 * * *")
     public void download() throws IOException {
         System.out.println("download start，time：" + System.currentTimeMillis());
         if (!new File(rootPath + "/url.txt").exists()) {
