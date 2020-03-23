@@ -112,7 +112,7 @@ public class Main {
 
         try {
             System.out.println(u);
-            URL url = new URL("http://updates.jenkins-ci.org" + u);
+            URL url = new URL("http://mirrors.tuna.tsinghua.edu.cn/jenkins" + u.substring(9));
             URLConnection connection = url.openConnection();
             connection.setConnectTimeout(30000);
             InputStream stream = connection.getInputStream();
