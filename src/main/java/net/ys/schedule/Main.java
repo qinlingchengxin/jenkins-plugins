@@ -39,7 +39,7 @@ public class Main {
         }
     }
 
-    @Scheduled(cron = "0 0 2 * * *")
+    //    @Scheduled(cron = "0 0 2 * * *")
     public void genJson() throws IOException {
         System.out.println("genJson start，time：" + System.currentTimeMillis());
         String json = "https://updates.jenkins.io/update-center.json";
